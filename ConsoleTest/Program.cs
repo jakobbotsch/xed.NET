@@ -15,7 +15,7 @@ namespace ConsoleTest
                                               StackAddressWidth = AddressWidth.Width32
                                           });
 
-            inst.Decode(new byte[] {0x45, 0xC0});
+            inst.Decode(new byte[] {0x83, 0x00, 0x19});
             Console.ReadLine();
         }
     }

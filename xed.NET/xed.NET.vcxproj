@@ -136,6 +136,7 @@
     <ClInclude Include="Error.h" />
     <ClInclude Include="InlineNative.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="Operand.h" />
     <ClInclude Include="XedState.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
@@ -146,6 +147,7 @@
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Init.cpp" />
+    <ClCompile Include="Operand.cpp" />
     <ClCompile Include="XedState.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
