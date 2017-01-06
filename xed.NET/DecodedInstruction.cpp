@@ -219,8 +219,7 @@ void DecodedInstruction::Decode(array<Byte>^ bytes, int index, int count)
     pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
     xed_error_enum_t error = xed_decode(ptr, pBytes, count);
 
-    if (error != XED_ERROR_NONE)
-        throw gcnew XedException(static_cast<XedError>(error));
+    XedException::Check(error);
 }
 
 void DecodedInstruction::IldDecode(array<Byte>^ bytes)
@@ -239,6 +238,5 @@ void DecodedInstruction::IldDecode(array<Byte>^ bytes, int index, int count)
     pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
     xed_error_enum_t error = xed_ild_decode(ptr, pBytes, count);
 
-    if (error != XED_ERROR_NONE)
-        throw gcnew XedException(static_cast<XedError>(error));
+    XedException::Check(error);
 }

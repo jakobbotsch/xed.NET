@@ -8,14 +8,27 @@ namespace ConsoleTest
         internal static void Main(string[] args)
         {
             Console.WriteLine("Test");
-            DecodedInstruction inst = new DecodedInstruction(
-                                          new XedState
-                                          {
-                                              Mode = MachineMode.Legacy32,
-                                              StackAddressWidth = AddressWidth.Width32
-                                          });
+            XedState state = new XedState
+                             {
+                                 Mode = MachineMode.Legacy32,
+                                 StackAddressWidth = AddressWidth.Width32
+                             };
 
-            inst.Decode(new byte[] {0x83, 0x00, 0x19});
+            EncoderRequest enc = new EncoderRequest(state);
+            enc.Class = InstClass.Push;
+            enc.SetOperandOrder(0, OperandName.Reg0);
+            enc.SetReg(OperandName.Reg0, Register.Eax);
+            byte[] bytes = enc.Encode();
+
+            DecodedInstruction inst = new DecodedInstruction(state);
+            inst.Decode(bytes);
+
+            enc = new EncoderRequest(inst);
+            enc.SetBase0(Register.Edx);
+            bytes = enc.Encode();
+            inst = new DecodedInstruction(state);
+            inst.Decode(bytes);
+
             Console.ReadLine();
         }
     }

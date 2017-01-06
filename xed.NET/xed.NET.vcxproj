@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="EncoderRequest.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="InlineNative.h" />
     <ClInclude Include="Enums.h" />
@@ -144,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="EncoderRequest.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Init.cpp" />

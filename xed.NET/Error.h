@@ -38,6 +38,9 @@ namespace XedNet
             XedError get() { return _errorCode; }
         }
 
+    internal:
+        static void Check(xed_error_enum_t error);
+
     private:
         XedError _errorCode;
     };
