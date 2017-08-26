@@ -14,6 +14,7 @@ EncoderRequest::EncoderRequest(XedState^ state)
     pin_ptr<xed_state_t> statePtr = state->_native.GetPointer();
 
     xed_encoder_request_zero_set_mode(ptr, statePtr);
+    GC::KeepAlive(this);
 }
 
 EncoderRequest::EncoderRequest(DecodedInstruction^ decoded)
@@ -22,13 +23,16 @@ EncoderRequest::EncoderRequest(DecodedInstruction^ decoded)
 
     *ptr = *decoded->_native.GetPointer();
     xed_encoder_request_init_from_decode(ptr);
+    GC::KeepAlive(this);
 }
 
 #define G(type, name, getter)                                  \
 type EncoderRequest::name::get()                               \
 {                                                              \
     pin_ptr<xed_encoder_request_t> ptr = _native.GetPointer(); \
-    return static_cast<type>(getter(ptr));                     \
+    type ret = static_cast<type>(getter(ptr));                 \
+    GC::KeepAlive(this);                                       \
+    return ret;                                                \
 }
 
 #define M0V(name, fn)                                          \
@@ -36,6 +40,7 @@ void EncoderRequest::name()                                    \
 {                                                              \
     pin_ptr<xed_encoder_request_t> ptr = _native.GetPointer(); \
     fn(ptr);                                                   \
+    GC::KeepAlive(this);                                       \
 }
 
 #define M1V(name, argT, argCastT, fn)                          \
@@ -43,6 +48,7 @@ void EncoderRequest::name(argT arg0)                           \
 {                                                              \
     pin_ptr<xed_encoder_request_t> ptr = _native.GetPointer(); \
     fn(ptr, static_cast<argCastT>(arg0));                      \
+    GC::KeepAlive(this);                                       \
 }
 
 #define M2V(name, arg0T, arg0CastT, arg1T, arg1CastT, fn)      \
@@ -52,6 +58,7 @@ void EncoderRequest::name(arg0T arg0, arg1T arg1)              \
     fn(ptr,                                                    \
        static_cast<arg0CastT>(arg0),                           \
        static_cast<arg1CastT>(arg1));                          \
+    GC::KeepAlive(this);                                       \
 }
 
 G(InstClass, Class, xed_encoder_request_get_iclass)
@@ -98,6 +105,7 @@ void EncoderRequest::Encode(array<Byte>^ bytes, int index, int maxCount, int% ou
                                         reinterpret_cast<unsigned int*>(pOutLength));
 
     XedException::Check(error);
+    GC::KeepAlive(this);
 }
 
 array<Byte>^ EncoderRequest::Encode()
@@ -108,6 +116,7 @@ array<Byte>^ EncoderRequest::Encode()
     unsigned int olen;
     xed_error_enum_t error = xed_encode(ptr, bytes, sizeof(bytes), &olen);
 
+    GC::KeepAlive(this);
     XedException::Check(error);
 
     array<Byte>^ arr = gcnew array<Byte>(olen);

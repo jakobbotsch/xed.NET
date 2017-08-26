@@ -11,6 +11,7 @@ DecodedInstruction::DecodedInstruction(XedState^ state)
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
     pin_ptr<xed_state_t> statePtr = state->_native.GetPointer();
     xed_decoded_inst_zero_set_mode(ptr, statePtr);
+    GC::KeepAlive(this);
 }
 
 // xed_decoded_inst_t
@@ -18,28 +19,36 @@ DecodedInstruction::DecodedInstruction(XedState^ state)
 type DecodedInstruction::name::get()                        \
 {                                                           \
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer(); \
-    return static_cast<type>(getter(ptr));                  \
+    type ret = static_cast<type>(getter(ptr));              \
+    GC::KeepAlive(this);                                    \
+    return ret;                                             \
 }
 
 #define GB(name, getter)                                    \
 bool DecodedInstruction::name::get()                        \
 {                                                           \
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer(); \
-    return getter(ptr) != 0;                                \
+    bool ret = getter(ptr) != 0;                            \
+    GC::KeepAlive(this);                                    \
+    return ret;                                             \
 }
 
-#define M1(retT, name, argT, castT, getter)                         \
-retT DecodedInstruction::name(argT arg)                             \
-{                                                                   \
-    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();         \
-    return static_cast<retT>(getter(ptr, static_cast<castT>(arg))); \
+#define M1(retT, name, argT, castT, getter)                             \
+retT DecodedInstruction::name(argT arg)                                 \
+{                                                                       \
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();             \
+    retT ret = static_cast<retT>(getter(ptr, static_cast<castT>(arg))); \
+    GC::KeepAlive(this);                                                \
+    return ret;                                                         \
 }
 
 #define M1B(name, argT, castT, getter)                      \
 bool DecodedInstruction::name(argT arg)                     \
 {                                                           \
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer(); \
-    return getter(ptr, static_cast<castT>(arg)) != 0;       \
+    bool ret = getter(ptr, static_cast<castT>(arg)) != 0;   \
+    GC::KeepAlive(this);                                    \
+    return ret;                                             \
 }
 
 G(Byte, ModRM, xed_decoded_inst_get_modrm)
@@ -104,11 +113,13 @@ M1(Register, GetIndexReg, int, int, xed_decoded_inst_get_index_reg)
 
 // xed_inst_t
 #undef G
-#define G(type, name, getter)                                     \
-type DecodedInstruction::name::get()                              \
-{                                                                 \
-    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();       \
-    return static_cast<type>(getter(xed_decoded_inst_inst(ptr))); \
+#define G(type, name, getter)                                         \
+type DecodedInstruction::name::get()                                  \
+{                                                                     \
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();           \
+    type ret = static_cast<type>(getter(xed_decoded_inst_inst(ptr))); \
+    GC::KeepAlive(this);                                              \
+    return ret;                                                       \
 }
 
 G(InstException, Exception, xed_inst_exception)
@@ -121,32 +132,40 @@ Operand DecodedInstruction::GetOperand(int index)
         throw gcnew ArgumentOutOfRangeException("index");
 
     // Note that xed_inst_operand returns a global, so this is ok.
-    return Operand(xed_inst_operand(inst, index));
+    Operand oper = Operand(xed_inst_operand(inst, index));
+    GC::KeepAlive(this);
+    return oper;
 }
 
 // xed_operand_values
 #undef GB
-#define GB(name, getter)                                    \
-bool DecodedInstruction::name::get()                        \
-{                                                           \
-    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer(); \
-    return getter(xed_decoded_inst_operands(ptr)) != 0;     \
+#define GB(name, getter)                                        \
+bool DecodedInstruction::name::get()                            \
+{                                                               \
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();     \
+    bool ret = getter(xed_decoded_inst_operands(ptr)) != 0;     \
+    GC::KeepAlive(this);                                        \
+    return ret;                                                 \
 }
 
 #undef G
-#define G(retT, name, getter)                                         \
-retT DecodedInstruction::name::get()                                  \
-{                                                                     \
-    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();           \
-    return static_cast<retT>(getter(xed_decoded_inst_operands(ptr))); \
+#define G(retT, name, getter)                                             \
+retT DecodedInstruction::name::get()                                      \
+{                                                                         \
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();               \
+    retT ret = static_cast<retT>(getter(xed_decoded_inst_operands(ptr))); \
+    GC::KeepAlive(this);                                                  \
+    return ret;                                                           \
 }
 
 #undef M1B
-#define M1B(name, argT, castT, getter)                                           \
-bool DecodedInstruction::name(argT arg)                                          \
-{                                                                                \
-    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();                      \
-    return getter(xed_decoded_inst_operands(ptr), static_cast<castT>(arg)) != 0; \
+#define M1B(name, argT, castT, getter)                                             \
+bool DecodedInstruction::name(argT arg)                                            \
+{                                                                                  \
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();                        \
+    bool b = getter(xed_decoded_inst_operands(ptr), static_cast<castT>(arg)) != 0; \
+    GC::KeepAlive(this);                                                           \
+    return b;                                                                      \
 }
 
 GB(HasBranchNotTakenHint, xed_operand_values_branch_not_taken_hint)
@@ -196,6 +215,8 @@ String^ DecodedInstruction::Format(Syntax syntax, UInt64 runtimeInstAddress)
         return gcnew String(result);
     }
 
+    GC::KeepAlive(this);
+
     throw gcnew InvalidOperationException("Cannot format instruction");
 }
 
@@ -221,6 +242,7 @@ void DecodedInstruction::Decode(array<Byte>^ bytes, int index, int count)
     xed_error_enum_t error = xed_decode(ptr, pBytes, count);
 
     XedException::Check(error);
+    GC::KeepAlive(this);
 }
 
 void DecodedInstruction::IldDecode(array<Byte>^ bytes)
@@ -240,4 +262,5 @@ void DecodedInstruction::IldDecode(array<Byte>^ bytes, int index, int count)
     xed_error_enum_t error = xed_ild_decode(ptr, pBytes, count);
 
     XedException::Check(error);
+    GC::KeepAlive(this);
 }
