@@ -21,6 +21,7 @@ namespace XedNet
         property bool IsConditionalRead { bool get(); }
         property bool IsConditionalWritten { bool get(); }
 
+        virtual System::String^ ToString() override;
     internal:
         Operand(const xed_operand_t* native);
 

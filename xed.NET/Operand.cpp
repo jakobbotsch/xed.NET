@@ -30,3 +30,10 @@ GB(IsWrittenOnly, xed_operand_written_only)
 GB(IsReadAndWritten, xed_operand_read_and_written)
 GB(IsConditionalRead, xed_operand_conditional_read)
 GB(IsConditionalWritten, xed_operand_conditional_write)
+
+String^ Operand::ToString()
+{
+    char buf[2048];
+    xed_operand_print(_native, buf, sizeof(buf));
+    return gcnew String(buf);
+}
