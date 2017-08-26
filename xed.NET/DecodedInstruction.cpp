@@ -120,6 +120,7 @@ Operand DecodedInstruction::GetOperand(int index)
     if (index < 0 || static_cast<UInt32>(index) >= xed_inst_noperands(inst))
         throw gcnew ArgumentOutOfRangeException("index");
 
+    // Note that xed_inst_operand returns a global, so this is ok.
     return Operand(xed_inst_operand(inst, index));
 }
 
