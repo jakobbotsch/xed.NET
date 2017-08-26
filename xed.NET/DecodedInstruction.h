@@ -4,6 +4,7 @@
 #include "InlineNative.h"
 #include "Enums.h"
 #include "Operand.h"
+#include "RFlagsInfo.h"
 
 namespace XedNet
 {
@@ -61,7 +62,7 @@ namespace XedNet
         property int SignedImmediate { int get(); }
         property Byte SecondImmediate { Byte get(); }
         Register GetReg(OperandName operand);
-        property System::Object^ RFlagsInfo { System::Object^ get(); }
+        property Nullable<XedNet::RFlagsInfo> RFlagsInfo { Nullable<XedNet::RFlagsInfo> get(); }
         property bool UsesRFlags { bool get(); }
         property int NumMemOperands { int get(); }
         bool MemRead(int index);

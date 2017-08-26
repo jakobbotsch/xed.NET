@@ -2,6 +2,7 @@
 #include "DecodedInstruction.h"
 #include "XedState.h"
 #include "Error.h"
+#include "RFlagsInfo.h"
 
 using namespace System;
 using namespace XedNet;
@@ -99,7 +100,16 @@ G(int, ImmediateWidthBits, xed_decoded_inst_get_immediate_width_bits)
 G(int, SignedImmediate, xed_decoded_inst_get_signed_immediate)
 G(Byte, SecondImmediate, xed_decoded_inst_get_second_immediate)
 M1(Register, GetReg, OperandName, xed_operand_enum_t, xed_decoded_inst_get_reg)
-Object^ DecodedInstruction::RFlagsInfo::get() { return nullptr; }
+Nullable<XedNet::RFlagsInfo> DecodedInstruction::RFlagsInfo::get()
+{
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
+    const xed_simple_flag_t* flags = xed_decoded_inst_get_rflags_info(ptr);
+    GC::KeepAlive(this);
+    if (flags == nullptr)
+        return Nullable<XedNet::RFlagsInfo>();
+    // Ok since this returns from a global table
+    return XedNet::RFlagsInfo(flags);
+}
 GB(UsesRFlags, xed_decoded_inst_uses_rflags)
 G(int, NumMemOperands, xed_decoded_inst_number_of_memory_operands)
 M1B(MemRead, int, int, xed_decoded_inst_mem_read)

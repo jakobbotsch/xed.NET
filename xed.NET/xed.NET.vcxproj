@@ -135,9 +135,12 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="EncoderRequest.h" />
     <ClInclude Include="Error.h" />
+    <ClInclude Include="FlagAction.h" />
+    <ClInclude Include="FlagSet.h" />
     <ClInclude Include="InlineNative.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Operand.h" />
+    <ClInclude Include="RFlagsInfo.h" />
     <ClInclude Include="XedState.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
@@ -148,8 +151,11 @@
     <ClCompile Include="EncoderRequest.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Enums.cpp" />
+    <ClCompile Include="FlagAction.cpp" />
+    <ClCompile Include="FlagSet.cpp" />
     <ClCompile Include="Init.cpp" />
     <ClCompile Include="Operand.cpp" />
+    <ClCompile Include="RFlagsInfo.cpp" />
     <ClCompile Include="XedState.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

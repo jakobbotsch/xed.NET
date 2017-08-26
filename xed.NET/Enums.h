@@ -2,6 +2,44 @@
 
 namespace XedNet
 {
+    public enum class FlagActionType
+    {
+        Invalid,
+        Undefined,
+        Test,
+        Modify,
+        Zero,
+        Pop,
+        Ah,
+        One,
+    };
+
+    public enum class XedFlag
+    {
+        Invalid,
+        Of, 
+        Sf, 
+        Zf, 
+        Af, 
+        Pf, 
+        Cf, 
+        Df, 
+        Vif, 
+        Iopl, 
+        If, 
+        Ac, 
+        Vm, 
+        Rf, 
+        Nt, 
+        Tf, 
+        Id, 
+        Vip, 
+        Fc0, 
+        Fc1, 
+        Fc2, 
+        Fc3, 
+    };
+
     public enum class Register
     {
         Invalid = XED_REG_INVALID,
