@@ -112,8 +112,10 @@ namespace XedNet
 
         void Decode(array<System::Byte>^ bytes);
         void Decode(array<System::Byte>^ bytes, int index, int count);
+        void Decode(System::Byte* bytes, int count);
         void IldDecode(array<System::Byte>^ bytes);
         void IldDecode(array<System::Byte>^ bytes, int index, int count);
+        void IldDecode(System::Byte* bytes, int count);
     internal:
         InlineNative<xed_decoded_inst_t> _native;
     };

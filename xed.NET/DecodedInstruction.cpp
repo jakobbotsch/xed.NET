@@ -244,12 +244,16 @@ void DecodedInstruction::Decode(array<Byte>^ bytes)
 void DecodedInstruction::Decode(array<Byte>^ bytes, int index, int count)
 {
     CheckBounds(bytes, index, count);
+    pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
+    Decode(pBytes, count);
+}
 
+void DecodedInstruction::Decode(System::Byte* bytes, int count)
+{
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
     xed_decoded_inst_zero_keep_mode(ptr);
 
-    pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    xed_error_enum_t error = xed_decode(ptr, pBytes, count);
+    xed_error_enum_t error = xed_decode(ptr, bytes, count);
 
     XedException::Check(error);
     GC::KeepAlive(this);
@@ -264,12 +268,16 @@ void DecodedInstruction::IldDecode(array<Byte>^ bytes)
 void DecodedInstruction::IldDecode(array<Byte>^ bytes, int index, int count)
 {
     CheckBounds(bytes, index, count);
+    pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
+    Decode(pBytes, count);
+}
 
+void DecodedInstruction::IldDecode(Byte* bytes, int count)
+{
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
     xed_decoded_inst_zero_keep_mode(ptr);
 
-    pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    xed_error_enum_t error = xed_ild_decode(ptr, pBytes, count);
+    xed_error_enum_t error = xed_ild_decode(ptr, bytes, count);
 
     XedException::Check(error);
     GC::KeepAlive(this);
