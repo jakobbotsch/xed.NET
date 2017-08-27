@@ -131,8 +131,8 @@ void EncoderRequest::EncodeNop(array<Byte>^ bytes, int index, int length)
     CheckBounds(bytes, index, length);
 
     pin_ptr<Byte> pBytes = length > 0 ? &bytes[index] : nullptr;
-    if (!xed_encode_nop(pBytes, static_cast<unsigned int>(length)))
-        throw gcnew ArgumentOutOfRangeException("length", "A nop of length " + length + " bytes cannot be encoded");
+    xed_error_enum_t err = xed_encode_nop(pBytes, static_cast<unsigned int>(length));
+    XedException::Check(err);
 }
 
 array<Byte>^ EncoderRequest::EncodeNop(int length)
@@ -142,8 +142,8 @@ array<Byte>^ EncoderRequest::EncodeNop(int length)
 
     array<Byte>^ arr = gcnew array<Byte>(length);
     pin_ptr<Byte> pArr = length > 0 ? &arr[0] : nullptr;
-    if (!xed_encode_nop(pArr, static_cast<unsigned int>(length)))
-        throw gcnew ArgumentOutOfRangeException("length", "A nop of length " + length + " cannot be encoded");
+    xed_error_enum_t err = xed_encode_nop(pArr, static_cast<unsigned int>(length));
 
+    XedException::Check(err);
     return arr;
 }
