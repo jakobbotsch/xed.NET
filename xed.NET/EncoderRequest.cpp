@@ -126,16 +126,20 @@ array<Byte>^ EncoderRequest::Encode()
     return arr;
 }
 
-void EncoderRequest::EncodeNop(array<Byte>^ bytes, int index, int length)
+bool EncoderRequest::EncodeNop(array<Byte>^ bytes, int index, int length, bool throwOnUnencodable)
 {
     CheckBounds(bytes, index, length);
 
     pin_ptr<Byte> pBytes = length > 0 ? &bytes[index] : nullptr;
     xed_error_enum_t err = xed_encode_nop(pBytes, static_cast<unsigned int>(length));
-    XedException::Check(err);
+
+    if (throwOnUnencodable)
+        XedException::Check(err);
+
+    return err == XED_ERROR_NONE;
 }
 
-array<Byte>^ EncoderRequest::EncodeNop(int length)
+array<Byte>^ EncoderRequest::EncodeNop(int length, bool throwOnUnencodable)
 {
     if (length <= 0)
         throw gcnew ArgumentOutOfRangeException("length");
@@ -144,6 +148,8 @@ array<Byte>^ EncoderRequest::EncodeNop(int length)
     pin_ptr<Byte> pArr = length > 0 ? &arr[0] : nullptr;
     xed_error_enum_t err = xed_encode_nop(pArr, static_cast<unsigned int>(length));
 
-    XedException::Check(err);
-    return arr;
+    if (throwOnUnencodable)
+        XedException::Check(err);
+
+    return err == XED_ERROR_NONE ? arr : nullptr;
 }

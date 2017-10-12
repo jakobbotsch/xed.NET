@@ -3,6 +3,7 @@
 #pragma once
 #include "InlineNative.h"
 #include "Enums.h"
+#include "Error.h"
 #include "Operand.h"
 #include "RFlagsInfo.h"
 
@@ -110,6 +111,12 @@ namespace XedNet
 
         String^ ToString() override;
 
+        XedError TryDecode(array<System::Byte>^ bytes);
+        XedError TryDecode(array<System::Byte>^ bytes, int index, int count);
+        XedError TryDecode(System::Byte* bytes, int count);
+        XedError TryIldDecode(array<System::Byte>^ bytes);
+        XedError TryIldDecode(array<System::Byte>^ bytes, int index, int count);
+        XedError TryIldDecode(System::Byte* bytes, int count);
         void Decode(array<System::Byte>^ bytes);
         void Decode(array<System::Byte>^ bytes, int index, int count);
         void Decode(System::Byte* bytes, int count);

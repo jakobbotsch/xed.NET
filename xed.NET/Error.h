@@ -40,6 +40,7 @@ namespace XedNet
 
     internal:
         static void Check(xed_error_enum_t error);
+        static void Check(XedError error);
 
     private:
         XedError _errorCode;

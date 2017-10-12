@@ -46,8 +46,8 @@ namespace XedNet
         void Encode(array<System::Byte>^ bytes, int index, int maxCount, [System::Runtime::InteropServices::Out] int% outLength);
         array<System::Byte>^ Encode();
 
-        static void EncodeNop(array<System::Byte>^ bytes, int index, int length);
-        static array<Byte>^ EncodeNop(int length);
+        static bool EncodeNop(array<System::Byte>^ bytes, int index, int length, bool throwOnUnencodable);
+        static array<Byte>^ EncodeNop(int length, bool throwOnUnencodable);
     internal:
         InlineNative<xed_encoder_request_t> _native;
     };

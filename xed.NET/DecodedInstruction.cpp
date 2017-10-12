@@ -235,50 +235,80 @@ String^ DecodedInstruction::ToString()
     return Disassembly;
 }
 
-void DecodedInstruction::Decode(array<Byte>^ bytes)
+XedError DecodedInstruction::TryDecode(array<Byte>^ bytes)
 {
     CheckNull(bytes);
-    Decode(bytes, 0, bytes->Length);
+    TryDecode(bytes, 0, bytes->Length);
 }
 
-void DecodedInstruction::Decode(array<Byte>^ bytes, int index, int count)
+XedError DecodedInstruction::TryDecode(array<Byte>^ bytes, int index, int count)
 {
     CheckBounds(bytes, index, count);
     pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    Decode(pBytes, count);
+    TryDecode(pBytes, count);
 }
 
-void DecodedInstruction::Decode(System::Byte* bytes, int count)
+XedError DecodedInstruction::TryDecode(System::Byte* bytes, int count)
 {
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
     xed_decoded_inst_zero_keep_mode(ptr);
 
     xed_error_enum_t error = xed_decode(ptr, bytes, count);
 
-    XedException::Check(error);
     GC::KeepAlive(this);
+    return static_cast<XedError>(error);
 }
 
-void DecodedInstruction::IldDecode(array<Byte>^ bytes)
+XedError DecodedInstruction::TryIldDecode(array<Byte>^ bytes)
 {
     CheckNull(bytes);
-    IldDecode(bytes, 0, bytes->Length);
+    TryIldDecode(bytes, 0, bytes->Length);
 }
 
-void DecodedInstruction::IldDecode(array<Byte>^ bytes, int index, int count)
+XedError DecodedInstruction::TryIldDecode(array<Byte>^ bytes, int index, int count)
 {
     CheckBounds(bytes, index, count);
     pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    Decode(pBytes, count);
+    TryIldDecode(pBytes, count);
 }
 
-void DecodedInstruction::IldDecode(Byte* bytes, int count)
+XedError DecodedInstruction::TryIldDecode(Byte* bytes, int count)
 {
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
     xed_decoded_inst_zero_keep_mode(ptr);
 
     xed_error_enum_t error = xed_ild_decode(ptr, bytes, count);
 
-    XedException::Check(error);
     GC::KeepAlive(this);
+    return static_cast<XedError>(error);
+}
+
+void DecodedInstruction::Decode(array<Byte>^ bytes)
+{
+    XedException::Check(TryDecode(bytes));
+}
+
+void DecodedInstruction::Decode(array<Byte>^ bytes, int index, int count)
+{
+    XedException::Check(TryDecode(bytes, index, count));
+}
+
+void DecodedInstruction::Decode(System::Byte* bytes, int count)
+{
+    XedException::Check(TryDecode(bytes, count));
+}
+
+void DecodedInstruction::IldDecode(array<Byte>^ bytes)
+{
+    XedException::Check(TryIldDecode(bytes));
+}
+
+void DecodedInstruction::IldDecode(array<Byte>^ bytes, int index, int count)
+{
+    XedException::Check(TryIldDecode(bytes, index, count));
+}
+
+void DecodedInstruction::IldDecode(Byte* bytes, int count)
+{
+    XedException::Check(TryIldDecode(bytes, count));
 }
