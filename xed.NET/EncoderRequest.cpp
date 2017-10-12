@@ -126,30 +126,27 @@ array<Byte>^ EncoderRequest::Encode()
     return arr;
 }
 
-bool EncoderRequest::EncodeNop(array<Byte>^ bytes, int index, int length, bool throwOnUnencodable)
+XedError EncoderRequest::TryEncodeNop(array<Byte>^ bytes, int index, int length)
 {
     CheckBounds(bytes, index, length);
 
     pin_ptr<Byte> pBytes = length > 0 ? &bytes[index] : nullptr;
     xed_error_enum_t err = xed_encode_nop(pBytes, static_cast<unsigned int>(length));
 
-    if (throwOnUnencodable)
-        XedException::Check(err);
-
-    return err == XED_ERROR_NONE;
+    return static_cast<XedError>(err);
 }
 
-array<Byte>^ EncoderRequest::EncodeNop(int length, bool throwOnUnencodable)
+void EncoderRequest::EncodeNop(array<Byte>^ bytes, int index, int length)
+{
+    XedException::Check(TryEncodeNop(bytes, index, length));
+}
+
+array<Byte>^ EncoderRequest::EncodeNop(int length)
 {
     if (length <= 0)
         throw gcnew ArgumentOutOfRangeException("length");
 
-    array<Byte>^ arr = gcnew array<Byte>(length);
-    pin_ptr<Byte> pArr = length > 0 ? &arr[0] : nullptr;
-    xed_error_enum_t err = xed_encode_nop(pArr, static_cast<unsigned int>(length));
-
-    if (throwOnUnencodable)
-        XedException::Check(err);
-
-    return err == XED_ERROR_NONE ? arr : nullptr;
+    array<Byte>^ bytes = gcnew array<Byte>(length);
+    EncodeNop(bytes, 0, bytes->Length);
+    return bytes;
 }

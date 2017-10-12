@@ -1,5 +1,6 @@
 #pragma once
 #include "InlineNative.h"
+#include "Error.h"
 #include "Enums.h"
 
 namespace XedNet
@@ -46,8 +47,9 @@ namespace XedNet
         void Encode(array<System::Byte>^ bytes, int index, int maxCount, [System::Runtime::InteropServices::Out] int% outLength);
         array<System::Byte>^ Encode();
 
-        static bool EncodeNop(array<System::Byte>^ bytes, int index, int length, bool throwOnUnencodable);
-        static array<Byte>^ EncodeNop(int length, bool throwOnUnencodable);
+        static XedError TryEncodeNop(array<System::Byte>^ bytes, int index, int length);
+        static void EncodeNop(array<System::Byte>^ bytes, int index, int length);
+        static array<Byte>^ EncodeNop(int length);
     internal:
         InlineNative<xed_encoder_request_t> _native;
     };
