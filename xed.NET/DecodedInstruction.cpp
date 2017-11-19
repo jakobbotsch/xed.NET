@@ -238,14 +238,14 @@ String^ DecodedInstruction::ToString()
 XedError DecodedInstruction::TryDecode(array<Byte>^ bytes)
 {
     CheckNull(bytes);
-    TryDecode(bytes, 0, bytes->Length);
+    return TryDecode(bytes, 0, bytes->Length);
 }
 
 XedError DecodedInstruction::TryDecode(array<Byte>^ bytes, int index, int count)
 {
     CheckBounds(bytes, index, count);
     pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    TryDecode(pBytes, count);
+    return TryDecode(pBytes, count);
 }
 
 XedError DecodedInstruction::TryDecode(System::Byte* bytes, int count)
@@ -262,14 +262,14 @@ XedError DecodedInstruction::TryDecode(System::Byte* bytes, int count)
 XedError DecodedInstruction::TryIldDecode(array<Byte>^ bytes)
 {
     CheckNull(bytes);
-    TryIldDecode(bytes, 0, bytes->Length);
+    return TryIldDecode(bytes, 0, bytes->Length);
 }
 
 XedError DecodedInstruction::TryIldDecode(array<Byte>^ bytes, int index, int count)
 {
     CheckBounds(bytes, index, count);
     pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    TryIldDecode(pBytes, count);
+    return TryIldDecode(pBytes, count);
 }
 
 XedError DecodedInstruction::TryIldDecode(Byte* bytes, int count)
