@@ -3,10 +3,12 @@
 
 ## Building
 Clone and install XED to somewhere on your system:
-```
+```powershell
 git clone https://github.com/intelxed/xed.git xed
 git clone https://github.com/intelxed/mbuild.git mbuild
 cd xed
+# Current version that xed.NET is based on.
+git checkout 8922c2d21ec7110f0ccf33bbdad146d93222918b
 C:/Python27/python.exe mfile.py install --host-cpu=ia32
 C:/Python27/python.exe mfile.py install --host-cpu=x86-64
 ```
