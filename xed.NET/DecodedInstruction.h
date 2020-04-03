@@ -111,18 +111,11 @@ namespace XedNet
 
         String^ ToString() override;
 
-        XedError TryDecode(array<System::Byte>^ bytes);
-        XedError TryDecode(array<System::Byte>^ bytes, int index, int count);
-        XedError TryDecode(System::Byte* bytes, int count);
-        XedError TryIldDecode(array<System::Byte>^ bytes);
-        XedError TryIldDecode(array<System::Byte>^ bytes, int index, int count);
-        XedError TryIldDecode(System::Byte* bytes, int count);
-        void Decode(array<System::Byte>^ bytes);
-        void Decode(array<System::Byte>^ bytes, int index, int count);
-        void Decode(System::Byte* bytes, int count);
-        void IldDecode(array<System::Byte>^ bytes);
-        void IldDecode(array<System::Byte>^ bytes, int index, int count);
-        void IldDecode(System::Byte* bytes, int count);
+        XedError TryDecode(ReadOnlySpan<System::Byte> bytes);
+        void Decode(ReadOnlySpan<System::Byte> bytes);
+
+        XedError TryIldDecode(ReadOnlySpan<System::Byte> bytes);
+        void IldDecode(ReadOnlySpan<System::Byte> bytes);
     internal:
         InlineNative<xed_decoded_inst_t> _native;
     };

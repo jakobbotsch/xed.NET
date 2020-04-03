@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "DecodedInstruction.h"
 #include "XedState.h"
 #include "Error.h"
@@ -205,7 +205,7 @@ GB(IsMemopWithoutModrm, xed_operand_values_memop_without_modrm)
 GB(HasModRM, xed_operand_values_has_modrm_byte)
 GB(HasSib, xed_operand_values_has_sib_byte)
 
-String^ DecodedInstruction::Disassembly::get() { return Format(Syntax::Intel); }
+String^ DecodedInstruction::Disassembly::get() { return Format(Syntax::INTEL); }
 
 String^ DecodedInstruction::Format(Syntax syntax)
 {
@@ -235,80 +235,36 @@ String^ DecodedInstruction::ToString()
     return Disassembly;
 }
 
-XedError DecodedInstruction::TryDecode(array<Byte>^ bytes)
-{
-    CheckNull(bytes);
-    return TryDecode(bytes, 0, bytes->Length);
-}
-
-XedError DecodedInstruction::TryDecode(array<Byte>^ bytes, int index, int count)
-{
-    CheckBounds(bytes, index, count);
-    pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    return TryDecode(pBytes, count);
-}
-
-XedError DecodedInstruction::TryDecode(System::Byte* bytes, int count)
+XedError DecodedInstruction::TryDecode(ReadOnlySpan<Byte> bytes)
 {
     pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
     xed_decoded_inst_zero_keep_mode(ptr);
 
-    xed_error_enum_t error = xed_decode(ptr, bytes, count);
+    pin_ptr<Byte> pBytes = &MemoryMarshal::GetReference(bytes);
+    xed_error_enum_t error = xed_decode(ptr, pBytes, static_cast<unsigned int>(bytes.Length));
 
     GC::KeepAlive(this);
     return static_cast<XedError>(error);
 }
 
-XedError DecodedInstruction::TryIldDecode(array<Byte>^ bytes)
-{
-    CheckNull(bytes);
-    return TryIldDecode(bytes, 0, bytes->Length);
-}
-
-XedError DecodedInstruction::TryIldDecode(array<Byte>^ bytes, int index, int count)
-{
-    CheckBounds(bytes, index, count);
-    pin_ptr<Byte> pBytes = count > 0 ? &bytes[index] : nullptr;
-    return TryIldDecode(pBytes, count);
-}
-
-XedError DecodedInstruction::TryIldDecode(Byte* bytes, int count)
-{
-    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
-    xed_decoded_inst_zero_keep_mode(ptr);
-
-    xed_error_enum_t error = xed_ild_decode(ptr, bytes, count);
-
-    GC::KeepAlive(this);
-    return static_cast<XedError>(error);
-}
-
-void DecodedInstruction::Decode(array<Byte>^ bytes)
+void DecodedInstruction::Decode(ReadOnlySpan<Byte> bytes)
 {
     XedException::Check(TryDecode(bytes));
 }
 
-void DecodedInstruction::Decode(array<Byte>^ bytes, int index, int count)
+XedError DecodedInstruction::TryIldDecode(ReadOnlySpan<Byte> bytes)
 {
-    XedException::Check(TryDecode(bytes, index, count));
+    pin_ptr<xed_decoded_inst_t> ptr = _native.GetPointer();
+    xed_decoded_inst_zero_keep_mode(ptr);
+
+    pin_ptr<Byte> pBytes = &MemoryMarshal::GetReference(bytes);
+    xed_error_enum_t error = xed_ild_decode(ptr, pBytes, static_cast<unsigned int>(bytes.Length));
+
+    GC::KeepAlive(this);
+    return static_cast<XedError>(error);
 }
 
-void DecodedInstruction::Decode(System::Byte* bytes, int count)
-{
-    XedException::Check(TryDecode(bytes, count));
-}
-
-void DecodedInstruction::IldDecode(array<Byte>^ bytes)
+void DecodedInstruction::IldDecode(ReadOnlySpan<Byte> bytes)
 {
     XedException::Check(TryIldDecode(bytes));
-}
-
-void DecodedInstruction::IldDecode(array<Byte>^ bytes, int index, int count)
-{
-    XedException::Check(TryIldDecode(bytes, index, count));
-}
-
-void DecodedInstruction::IldDecode(Byte* bytes, int count)
-{
-    XedException::Check(TryIldDecode(bytes, count));
 }

@@ -1,4 +1,4 @@
-#include "Stdafx.h"
+#include "pch.h"
 
 struct __declspec(dllexport) Init
 {

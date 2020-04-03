@@ -1,4 +1,4 @@
-#include "Stdafx.h"
+#include "pch.h"
 #include "EncoderRequest.h"
 #include "XedState.h"
 #include "DecodedInstruction.h"
@@ -63,9 +63,6 @@ void EncoderRequest::name(arg0T arg0, arg1T arg1)              \
 
 G(InstClass, Class, xed_encoder_request_get_iclass)
 void EncoderRequest::Class::set(InstClass value) { pin_ptr<xed_encoder_request_t> ptr = _native.GetPointer(); xed_encoder_request_set_iclass(ptr, static_cast<xed_iclass_enum_t>(value)); }
-M0V(SetRepne, xed_encoder_request_set_repne)
-M0V(SetRep, xed_encoder_request_set_rep)
-M0V(ClearRep, xed_encoder_request_clear_rep)
 M1V(SetEffectiveOperandWidth, int, int, xed_encoder_request_set_effective_operand_width)
 M1V(SetEffectiveAddressSize, int, int, xed_encoder_request_set_effective_address_size)
 M2V(SetReg, OperandName, xed_operand_enum_t, Register, xed_reg_enum_t, xed_encoder_request_set_reg)
@@ -93,15 +90,13 @@ M1V(SetScale, int, int, xed_encoder_request_set_scale)
 M0V(ClearOperandOrder, xed_encoder_request_zero_operand_order)
 
 
-void EncoderRequest::Encode(array<Byte>^ bytes, int index, int maxCount, int% outLength)
+void EncoderRequest::Encode(Span<Byte> bytes, int% outLength)
 {
-    CheckBounds(bytes, index, maxCount);
-
     pin_ptr<xed_encoder_request_t> ptr = _native.GetPointer();
-    pin_ptr<Byte> pBytes = maxCount > 0 ? &bytes[index] : nullptr;
+    pin_ptr<Byte> pBytes = &MemoryMarshal::GetReference(bytes);
     pin_ptr<int> pOutLength = &outLength;
 
-    xed_error_enum_t error = xed_encode(ptr, pBytes, maxCount,
+    xed_error_enum_t error = xed_encode(ptr, pBytes, static_cast<unsigned int>(bytes.Length),
                                         reinterpret_cast<unsigned int*>(pOutLength));
 
     XedException::Check(error);
@@ -119,26 +114,20 @@ array<Byte>^ EncoderRequest::Encode()
     GC::KeepAlive(this);
     XedException::Check(error);
 
-    array<Byte>^ arr = gcnew array<Byte>(olen);
-    for (unsigned int i = 0; i < olen; i++)
-        arr[i] = bytes[i];
-
-    return arr;
+    return Span<Byte>(bytes, static_cast<int>(olen)).ToArray();
 }
 
-XedError EncoderRequest::TryEncodeNop(array<Byte>^ bytes, int index, int length)
+XedError EncoderRequest::TryEncodeNop(Span<Byte> bytes)
 {
-    CheckBounds(bytes, index, length);
-
-    pin_ptr<Byte> pBytes = length > 0 ? &bytes[index] : nullptr;
-    xed_error_enum_t err = xed_encode_nop(pBytes, static_cast<unsigned int>(length));
+    pin_ptr<Byte> pBytes = &MemoryMarshal::GetReference(bytes);
+    xed_error_enum_t err = xed_encode_nop(pBytes, static_cast<unsigned int>(bytes.Length));
 
     return static_cast<XedError>(err);
 }
 
-void EncoderRequest::EncodeNop(array<Byte>^ bytes, int index, int length)
+void EncoderRequest::EncodeNop(Span<Byte> bytes)
 {
-    XedException::Check(TryEncodeNop(bytes, index, length));
+    XedException::Check(TryEncodeNop(bytes));
 }
 
 array<Byte>^ EncoderRequest::EncodeNop(int length)
@@ -147,6 +136,6 @@ array<Byte>^ EncoderRequest::EncodeNop(int length)
         throw gcnew ArgumentOutOfRangeException("length");
 
     array<Byte>^ bytes = gcnew array<Byte>(length);
-    EncodeNop(bytes, 0, bytes->Length);
+    EncodeNop(bytes);
     return bytes;
 }

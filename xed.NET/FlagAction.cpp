@@ -1,4 +1,4 @@
-#include "Stdafx.h"
+#include "pch.h"
 #include "FlagAction.h"
 
 using namespace System;

@@ -1,7 +1,5 @@
 #pragma once
 
-#define CheckNull(o) do { if ((o) == nullptr) throw gcnew ArgumentNullException(#o); } while (false)
-
 #define CheckBounds(arr, index, count) do { if ((arr) == nullptr) throw gcnew ArgumentNullException(#arr); \
 	if ((index) < 0) throw gcnew ArgumentOutOfRangeException(#index); \
 	if ((count) < 0) throw gcnew ArgumentOutOfRangeException(#count); \

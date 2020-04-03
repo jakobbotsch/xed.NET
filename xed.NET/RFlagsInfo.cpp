@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "RFlagsInfo.h"
 
 using namespace System;

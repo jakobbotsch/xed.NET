@@ -15,9 +15,6 @@ namespace XedNet
         EncoderRequest(DecodedInstruction^ decoded);
 
         property InstClass Class { InstClass get(); void set(InstClass value); }
-        void SetRepne();
-        void SetRep();
-        void ClearRep();
         void SetEffectiveOperandWidth(int bits);
         void SetEffectiveAddressSize(int bits);
         void SetReg(OperandName operand, Register reg);
@@ -44,11 +41,11 @@ namespace XedNet
         void SetScale(int scale);
         void ClearOperandOrder();
 
-        void Encode(array<System::Byte>^ bytes, int index, int maxCount, [System::Runtime::InteropServices::Out] int% outLength);
+        void Encode(Span<System::Byte> bytes, [System::Runtime::InteropServices::Out] int% outLength);
         array<System::Byte>^ Encode();
 
-        static XedError TryEncodeNop(array<System::Byte>^ bytes, int index, int length);
-        static void EncodeNop(array<System::Byte>^ bytes, int index, int length);
+        static XedError TryEncodeNop(Span<System::Byte> bytes);
+        static void EncodeNop(Span<System::Byte> bytes);
         static array<Byte>^ EncodeNop(int length);
     internal:
         InlineNative<xed_encoder_request_t> _native;

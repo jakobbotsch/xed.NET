@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PCH_H
+#define PCH_H
+
 #pragma unmanaged
 extern "C" {
 #include <xed/xed-interface.h>
@@ -8,3 +10,4 @@ extern "C" {
 #pragma managed
 #include "Common.h"
 
+#endif //PCH_H

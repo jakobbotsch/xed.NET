@@ -1,27 +1,9 @@
 #pragma once
 #include "InlineNative.h"
+#include "Enums.h"
 
 namespace XedNet
 {
-    public enum class MachineMode
-    {
-        Invalid = XED_MACHINE_MODE_INVALID,
-        Long64 = XED_MACHINE_MODE_LONG_64,
-        LongCompat32 = XED_MACHINE_MODE_LONG_COMPAT_32,
-        LongCompat16 = XED_MACHINE_MODE_LONG_COMPAT_16,
-        Legacy32 = XED_MACHINE_MODE_LEGACY_32,
-        Legacy16 = XED_MACHINE_MODE_LEGACY_16,
-        Real16 = XED_MACHINE_MODE_REAL_16,
-    };
-
-    public enum class AddressWidth
-    {
-        Invalid = XED_ADDRESS_WIDTH_INVALID,
-        Width16 = XED_ADDRESS_WIDTH_16b,
-        Width32 = XED_ADDRESS_WIDTH_32b,
-        Width64 = XED_ADDRESS_WIDTH_64b,
-    };
-
     public ref class XedState
     {
     public:
