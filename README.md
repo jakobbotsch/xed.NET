@@ -14,11 +14,7 @@ python mfile.py install --host-cpu=x86-64
 ```
 
 This will leave the results in the `xed\kits` folder.
-
-In Visual Studio, go to View -> Other Windows -> Property Manager. Now add the proper
-32-bit and 64-bit include/library directories here (ia32 = 32-bit, x86-64 = 64-bit).
-
-After this process, the C++
+To get xed.NET compiling you can now add the necessary include/library paths (under `xed\kits`) into the xed.NET project in Visual Studio.
 
 ## Naming conventions
 The name of each enum is converted into a .NET style name (CamelCase). Each enum member
